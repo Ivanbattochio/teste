@@ -23,7 +23,7 @@ const options = {
 app.use(actuator(options));
 app.get("/", (req, res) => {
   console.log("hello world");
-  res.send("Hello World!!!!!");
+  res.send("Hello World!!!!!!!!");
 });
 
 app.post("/teste", jsonParser, (req, res) => {
