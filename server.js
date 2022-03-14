@@ -4,63 +4,61 @@ const { json } = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const axios = require("axios");
-const actuator = require("express-actuator");
+const { exec } = require("child_process");
+
 app.use(json());
+
+const port = process.env.NODE_PORT || 55501;
 
 var jsonParser = bodyParser.json();
 
-const options = {
-  customEndpoints: [
-    {
-      id: "dependencies", // used as endpoint /dependencies or ${basePath}/dependencies
-      controller: (req, res) => {
-        // Controller to be called when accessing this endpoint
-        // Your custom code here
-      },
-    },
-  ],
-};
-app.use(actuator(options));
 app.get("/", (req, res) => {
   console.log("hello world");
-  res.send("Hello World!!!!!!!!");
+  res.send("Hello World!");
 });
 
 app.post("/teste", jsonParser, (req, res) => {
   axios
-    .post(
-      "http://localhost:3000/card-url",
-      {
-        name: "lucas",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-    .then(function (res) {
+    .post("https://teste-ivory.vercel.app/card-url", {
+      card: req.body,
+    })
+    .then(function (response) {
+      console.log("console log do req.data no teste\n", req.data);
       console.log("console log do req.body no teste\n", req.body);
-      console.log(res.data);
+      res.status(200);
     })
     .catch(function (error) {
       console.log(error.message);
     });
+});
+
+app.post("/update-repo", (req, res) => {
+  exec(
+    "git pull && sleep 5 && npm install && sleep 10 && sudo systemctl restart pipefy-integration",
+    (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+    }
+  );
   res.sendStatus(200);
 });
 
 app.post("/card-url", (req, res) => {
-  console.log("console log do req.body.card.name", req.body?.card?.name);
+  console.log("console log do req.body.card.name", req.body.card.name);
+  console.log("console log do req.body no card-url\n", req.body);
 
-  res.status(200).send("mandou no /card-url");
+  res.status(200).send(res);
 });
 
-app.post("/clicksign", (req, res) => {
-  axios.post(
-    `${process.env.CLICKSIGN_URL}/v1/templates/${template.key}/documents?access_token=${process.env.CLICKSIGN_ACCESS_TOKEN}`
-  );
+app.listen(port, function () {
+  console.log(`Server running at port ${port}`);
 });
 
-app.listen(3000, function () {
-  console.log("server running at port 3000");
-});
+module.exports = app;
