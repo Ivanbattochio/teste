@@ -67,10 +67,16 @@ app.post("/webhooks/update-repo", (req, res) => {
 });
 
 app.post("/webhooks/pipefy/302289021", (req, res) => {
-  getLogger().info(`O body da req.body.name é ${req.body?.name}\n`);
-  getLogger().info(`O body da req.body.card é ${req.body?.card}\n`);
   getLogger().info(
-    `O body da req.body.card.attachments é ${req.body?.card?.attachments}\n`
+    `O body da req.body.name é ${req.body.name ? req.body.name : ""}\n`
+  );
+  getLogger().info(
+    `O body da req.body.card é  ${req.body.card ? req.body.card : ""}\n`
+  );
+  getLogger().info(
+    `O body da req.body.card.attachments é ${
+      req.body.card ? req.body.card.attachments : ""
+    }\n`
   );
 
   res.sendStatus(200);
