@@ -1,17 +1,15 @@
-var log4js = require("log4js");
+const log4js = require("log4js");
 
 const CATEGORY = "ivan-pipefy";
 
 const configure = () => {
   let appenders = {};
-
   appenders[CATEGORY] = {
     type: "dateFile",
     filename: `logs/${CATEGORY}.log`,
     pattern: ".yyyy-MM-dd-hh",
     compress: true,
   };
-
   appenders["console"] = {
     type: "console",
   };
@@ -39,6 +37,5 @@ const handleUncaughtException = () => {
 
 module.exports = initLogger = () => {
   configure();
-
   handleUncaughtException();
 };
