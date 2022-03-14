@@ -9,6 +9,7 @@ const { exec } = require("child_process");
 app.use(json());
 
 const port = process.env.NODE_PORT || 55501;
+const secret = process.env.SECRET_GITHUB_PUSH_WEBHOOK;
 
 var jsonParser = bodyParser.json();
 
@@ -32,21 +33,24 @@ app.post("/teste", jsonParser, (req, res) => {
     });
 });
 
-app.post("/update-repo", (req, res) => {
-  exec(
-    "git pull && sleep 5 && npm install && sleep 10 && sudo systemctl restart pipefy-integration",
-    (error, stdout, stderr) => {
-      if (error) {
-        console.log(`error: ${error.message}`);
-        return;
+app.post("/webhooks/update-repo", (req, res) => {
+  console.log(req.headers);
+  if (req.headers["X-Hub-Signature-256"] == SECRET_GITHUB_PUSH_WEBHOOK) {
+    exec(
+      "git pull && sleep 5 && npm install && sleep 10 && sudo systemctl restart pipefy-integration",
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
       }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-    }
-  );
+    );
+  }
   res.sendStatus(200);
 });
 
