@@ -44,7 +44,7 @@ app.post("/webhooks/update-repo", (req, res) => {
   }*/
 
   exec(
-    "sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
+    "cd /plantview/ivan-pipefy-integration/teste && sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
     (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
