@@ -6,7 +6,7 @@ const configure = () => {
   let appenders = {};
   appenders[CATEGORY] = {
     type: "dateFile",
-    filename: `logs/${CATEGORY}.log`,
+    filename: `/plantview/ivan-pipefy-integration/teste/logs/${CATEGORY}.log`,
     pattern: ".yyyy-MM-dd-hh",
     compress: true,
   };

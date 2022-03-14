@@ -26,7 +26,9 @@ app.get("/", (req, res) => {
 
 app.get("/log", (req, res) => {
   var logText = fs
-    .readFileSync("./logs/ivan-pipefy.log")
+    .readFileSync(
+      "./plantview/ivan-pipefy-integration/teste/logs/ivan-pipefy.log"
+    )
     .toString()
     .split("\n")
     .map((line) => line.split("] ["))
