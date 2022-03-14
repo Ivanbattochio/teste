@@ -6,10 +6,9 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const { exec } = require("child_process");
 const crypto = require("crypto-js");
-const { initLogger, getLogger } = require("./logger.js");
-
+const initLogger = require("./logger.js");
+const getLogger = require("./logger.js");
 var fs = require("fs");
-const { getLogger } = require("log4js");
 
 app.use(json());
 
