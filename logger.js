@@ -38,6 +38,7 @@ const handleUncaughtException = () => {
 module.exports = initLogger = () => {
   console.log("iniciou o log");
   configure();
+  console.log("passou do configure");
   handleUncaughtException();
   console.log("finalizou");
 };
