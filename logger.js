@@ -4,16 +4,18 @@ const CATEGORY = "ivan-pipefy";
 
 const configure = () => {
   let appenders = {};
+  console.log("iniciou o configure");
   appenders[CATEGORY] = {
     type: "dateFile",
     filename: `logs/${CATEGORY}.log`,
     pattern: ".yyyy-MM-dd-hh",
     compress: true,
   };
+  console.log("passou do category");
   appenders["console"] = {
     type: "console",
   };
-
+  console.log("passou do console");
   log4js.configure({
     appenders: appenders,
     categories: {
@@ -23,6 +25,7 @@ const configure = () => {
       },
     },
   });
+  console.log("passou do log4jsconfigure");
 };
 
 module.exports = getLogger = () => {
