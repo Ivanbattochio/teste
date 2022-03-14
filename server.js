@@ -15,7 +15,7 @@ var jsonParser = bodyParser.json();
 
 app.get("/", (req, res) => {
   console.log("hello world");
-  res.send("Hello hash secret!!!!");
+  res.send("Hello sem hash secret!!!!");
 });
 
 app.post("/teste", jsonParser, (req, res) => {
