@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { exec } = require("child_process");
-
+const crypto = require("crypto-js");
 app.use(json());
 
 const port = process.env.NODE_PORT || 55501;
@@ -35,7 +35,10 @@ app.post("/teste", jsonParser, (req, res) => {
 
 app.post("/webhooks/update-repo", (req, res) => {
   console.log(req.headers);
-  if (req.headers["X-Hub-Signature-256"] == secret) {
+  const decrypt = crypto.SHA256(req.headers["X-Hub-Signature-256"]);
+  console.log(decrypt);
+  console.log(secret);
+  if (decrypt == secret) {
     exec(
       "sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
       (error, stdout, stderr) => {
