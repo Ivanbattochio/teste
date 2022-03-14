@@ -34,26 +34,29 @@ app.post("/teste", jsonParser, (req, res) => {
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
-  console.log(req.headers);
+  /*console.log(req.headers);
   const decrypt = crypto.SHA256(req.headers["X-Hub-Signature-256"]);
+  const HMACdigest = crypto.HmacSHA256()
   console.log(decrypt);
   console.log(secret);
   if (decrypt == secret) {
-    exec(
-      "sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log(`error: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
+    
+  }*/
+
+  exec(
+    "sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
+    (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
       }
-    );
-  }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+    }
+  );
   res.sendStatus(200);
 });
 
