@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "express": "^4.17.3",
-    "express-actuator": "^1.8.0"
+    "express-actuator": "^1.8.0",
+    "log4js": "^6.4.2"
   },
   "repository": {
     "type": "git",

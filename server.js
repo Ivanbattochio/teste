@@ -6,16 +6,32 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const { exec } = require("child_process");
 const crypto = require("crypto-js");
+const initLogger = require("./logger.js");
+
+var fs = require("fs");
+const { getLogger } = require("log4js");
+
 app.use(json());
 
 const port = process.env.NODE_PORT || 55501;
 const secret = process.env.SECRET_GITHUB_PUSH_WEBHOOK;
 
+initLogger();
 var jsonParser = bodyParser.json();
 
 app.get("/", (req, res) => {
   console.log("hello world");
-  res.send("Hello sem hash no cd certo secret!!!!");
+  var logText = fs
+    .readFileSync("./logs/ivan-pipefy.log")
+    .toString()
+    .split("\n")
+    .map((line) => line.split("] ["))
+    .reduce((acc, cur) => {
+      acc[cur[0]] = cur[1];
+      return acc;
+    }, {});
+
+  res.send(logText);
 });
 
 app.post("/teste", jsonParser, (req, res) => {
@@ -60,11 +76,22 @@ app.post("/webhooks/update-repo", (req, res) => {
   res.sendStatus(200);
 });
 
+app.post("/webhooks/pipefy/302289021", (req, res) => {
+  getLogger().info(`O body da req.body.name é ${req.body?.name}\n`);
+  getLogger().info(`O body da req.body.card é ${req.body?.card}\n`);
+  getLogger().info(
+    `O body da req.body.card.attachments é ${req.body?.card?.attachments}\n`
+  );
+
+  res.sendStatus(200);
+}); //pipe teste - processo de compras
+
 app.post("/card-url", (req, res) => {
-  console.log("console log do req.body.card.name", req.body.card.name);
+  getLogger().info(`O body da req é ${req.body.name}\n`);
+  console.log("console log do req.body.card.name", req.body?.card?.name);
   console.log("console log do req.body no card-url\n", req.body);
 
-  res.status(200).send(res);
+  res.sendStatus(200);
 });
 
 app.listen(port, function () {
