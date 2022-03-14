@@ -37,7 +37,7 @@ app.post("/webhooks/update-repo", (req, res) => {
   console.log(req.headers);
   if (req.headers["X-Hub-Signature-256"] == SECRET_GITHUB_PUSH_WEBHOOK) {
     exec(
-      "git pull && sleep 5 && npm install && sleep 10 && sudo systemctl restart pipefy-integration",
+      "sudo git pull && sleep 5 && sudo npm install && sleep 10 && sudo systemctl restart pipefy-integration",
       (error, stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`);
