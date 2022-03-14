@@ -82,16 +82,18 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
   getLogger().info(
     `O body da req.body.card.attachments é ${req.body?.card?.attachments}\n`
   );
-
+  axios
+    .post("https://teste-ivanbattochio.vercel.app/card-url", {
+      card: req.body,
+    })
+    .catch(function (error) {
+      console.log(error.message);
+    });
   res.sendStatus(200);
 }); //pipe teste - processo de compras
 
 app.post("/card-url", (req, res) => {
-  getLogger().info(`O body da req é ${req.body.name}\n`);
-  console.log("console log do req.body.card.name", req.body?.card?.name);
-  console.log("console log do req.body no card-url\n", req.body);
-
-  res.sendStatus(200);
+  res.send(req.body);
 });
 
 app.listen(port, function () {

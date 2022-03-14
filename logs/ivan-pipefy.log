@@ -1,2 +1,7 @@
 [2022-03-14T12:51:33.032] [INFO] ivan-pipefy - O body da req é lucas
-[2022-03-14T12:51:46.495] [INFO] ivan-pipefy - O body da req é lucas
+[2022-03-14T12:51:46.495] [INFO] ivan-pipefy - O body da req é lucas[2022-03-14T13:37:33.990] [INFO] default - O body da req.body.name é lucas
+
+[2022-03-14T13:37:33.991] [INFO] default - O body da req.body.card é undefined
+
+[2022-03-14T13:37:33.991] [INFO] default - O body da req.body.card.attachments é undefined
+
