@@ -26,7 +26,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/log", (req, res) => {
-  console.log("hello world");
   var logText = fs
     .readFileSync("./logs/ivan-pipefy.log")
     .toString()
@@ -73,13 +72,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
   getLogger().info(
     `O body da req.body.card.attachments é ${req.body?.card?.attachments}\n`
   );
-  axios
-    .post("https://teste-ivanbattochio.vercel.app/card-url", {
-      card: req.body,
-    })
-    .catch(function (error) {
-      console.log(error.message);
-    });
+
   res.sendStatus(200);
 }); //pipe teste - processo de compras
 
