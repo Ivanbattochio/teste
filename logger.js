@@ -39,4 +39,5 @@ module.exports = initLogger = () => {
   console.log("iniciou o log");
   configure();
   handleUncaughtException();
+  console.log("finalizou");
 };
