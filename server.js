@@ -21,6 +21,12 @@ var jsonParser = bodyParser.json();
 
 app.get("/", (req, res) => {
   console.log("hello world");
+
+  res.send("First Page");
+});
+
+app.get("/log", (req, res) => {
+  console.log("hello world");
   var logText = fs
     .readFileSync("./logs/ivan-pipefy.log")
     .toString()
@@ -32,21 +38,6 @@ app.get("/", (req, res) => {
     }, {});
 
   res.send(logText);
-});
-
-app.post("/teste", jsonParser, (req, res) => {
-  axios
-    .post("https://teste-ivory.vercel.app/card-url", {
-      card: req.body,
-    })
-    .then(function (response) {
-      console.log("console log do req.data no teste\n", req.data);
-      console.log("console log do req.body no teste\n", req.body);
-      res.status(200);
-    })
-    .catch(function (error) {
-      console.log(error.message);
-    });
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
