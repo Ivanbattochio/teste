@@ -3,20 +3,49 @@ const cors = require("cors");
 const { json } = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const axios = require("axios");
 const { exec } = require("child_process");
 const crypto = require("crypto-js");
 const initLogger = require("./logger.js");
 const getLogger = require("./logger.js");
 var fs = require("fs");
-
-app.use(json());
+app.use(cors());
 
 const port = process.env.NODE_PORT || 55501;
 const secret = process.env.SECRET_GITHUB_PUSH_WEBHOOK;
 
+const sigHeaderName = "X-Hub-Signature-256";
+const sigHashAlg = "sha256";
+
+app.use(
+  bodyParser.json({
+    verify: (req, res, buf, encoding) => {
+      if (buf && buf.length) {
+        req.rawBody = buf.toString(encoding || "utf8");
+      }
+    },
+  })
+);
+
+function verifyPostData(req, res, next) {
+  if (!req.rawBody) {
+    return next("Request body empty");
+  }
+
+  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
+  const hmac = crypto.createHmac(sigHashAlg, secret);
+  const digest = Buffer.from(
+    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
+    "utf8"
+  );
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
+    return next(
+      `Request body digest (${digest}) did not match ${sigHeaderName} (${sig})`
+    );
+  }
+  res.sendStatus(403);
+}
+
 initLogger();
-var jsonParser = bodyParser.json();
 
 app.get("/", (req, res) => {
   console.log("hello world");
@@ -40,16 +69,7 @@ app.get("/log", (req, res) => {
   res.send(logText);
 });
 
-app.post("/webhooks/update-repo", (req, res) => {
-  /*console.log(req.headers);
-  const decrypt = crypto.SHA256(req.headers["X-Hub-Signature-256"]);
-  const HMACdigest = crypto.HmacSHA256()
-  console.log(decrypt);
-  console.log(secret);
-  if (decrypt == secret) {
-    
-  }*/
-
+app.post("/webhooks/update-repo", verifyPostData, (req, res) => {
   exec(
     "cd /plantview/ivan-pipefy-integration/teste && git pull && sleep 5 && npm install && sleep 10 && systemctl restart pipefy-integration",
     (error, stdout, stderr) => {
