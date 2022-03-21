@@ -28,7 +28,7 @@ app.use(
 
 function verifyPostData(req, res, next) {
   if (!req.rawBody) {
-    return next("Request body empty");
+    next("Request body empty");
   }
 
   const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
@@ -38,9 +38,9 @@ function verifyPostData(req, res, next) {
     "utf8"
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    return res.sendStatus(403);
+    res.sendStatus(403);
   }
-  return next();
+  next();
 }
 
 initLogger();
@@ -81,6 +81,7 @@ app.post("/webhooks/update-repo", verifyPostData, (req, res) => {
         return;
       }
       console.log(`stdout: ${stdout}`);
+      getLogger().info("Passou da validaçao!");
     }
   );
   res.sendStatus(200);
