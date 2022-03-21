@@ -52,6 +52,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/log", (req, res) => {
+  //aii q
   var logText = fs
     .readFileSync(
       "./plantview/ivan-pipefy-integration/teste/logs/ivan-pipefy.log"
