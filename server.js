@@ -26,22 +26,6 @@ app.use(
   })
 );
 
-function verifyPostData(req, res, next) {
-  if (!req.rawBody) {
-    next("Request body empty");
-  }
-
-  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
-  const hmac = crypto.createHmac(sigHashAlg, secret);
-  const digest = Buffer.from(
-    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
-    "utf8"
-  );
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    res.sendStatus(403);
-  } else next();
-}
-
 initLogger();
 
 app.get("/", (req, res) => {
@@ -67,23 +51,37 @@ app.get("/log", (req, res) => {
   res.send(logText);
 });
 
-app.post("/webhooks/update-repo", verifyPostData, (req, res) => {
-  exec(
-    "cd /plantview/ivan-pipefy-integration/teste && git pull && sleep 5 && npm install && sleep 10 && systemctl restart pipefy-integration",
-    (error, stdout, stderr) => {
-      if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      getLogger().info("Passou da validaçao!");
-    }
+app.post("/webhooks/update-repo", (req, res) => {
+  if (!req.rawBody) {
+    next("Request body empty");
+  }
+
+  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
+  const hmac = crypto.createHmac(sigHashAlg, secret);
+  const digest = Buffer.from(
+    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
+    "utf8"
   );
-  res.sendStatus(200);
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
+    res.sendStatus(403);
+  } else {
+    exec(
+      "cd /plantview/ivan-pipefy-integration/teste && git pull && sleep 5 && npm install && sleep 10 && systemctl restart pipefy-integration",
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        getLogger().info("Passou da validaçao!");
+      }
+    );
+    res.sendStatus(200);
+  }
 });
 
 app.post("/webhooks/pipefy/302289021", (req, res) => {
