@@ -38,11 +38,9 @@ function verifyPostData(req, res, next) {
     "utf8"
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    return next(
-      `Request body digest (${digest}) did not match ${sigHeaderName} (${sig})`
-    );
+    return res.sendStatus(403);
   }
-  res.sendStatus(403);
+  return next();
 }
 
 initLogger();
