@@ -11,7 +11,7 @@ var fs = require("fs");
 app.use(cors());
 
 const port = process.env.NODE_PORT || 55501;
-const secret = process.env.SECRET_GITHUB_PUSH_WEBHOOK;
+const secret = process.env.NODE_SECRET_GITHUB_PUSH_WEBHOOK;
 
 const sigHeaderName = "X-Hub-Signature-256";
 const sigHashAlg = "sha256";
@@ -28,10 +28,24 @@ app.use(
 
 initLogger();
 
-app.get("/", (req, res) => {
-  console.log("hello world");
+app.post("/", (req, res) => {
+  if (!req.rawBody) {
+    next("Request body empty");
+  }
 
-  res.send("Agora vai dar boa por favor");
+  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
+
+  const hmac = crypto.createHmac(sigHashAlg, secret);
+  const digest = Buffer.from(
+    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
+    "utf8"
+  );
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
+    console.log("deu errado");
+    res.sendStatus(403);
+  } else {
+    console.log("deu boa");
+  }
 });
 
 app.get("/log", (req, res) => {
