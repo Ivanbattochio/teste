@@ -34,7 +34,7 @@ app.post("/", (req, res) => {
   }
 
   const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
-
+  crypto.createHmac;
   const hmac = crypto.createHmac(sigHashAlg, secret);
   const digest = Buffer.from(
     sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
