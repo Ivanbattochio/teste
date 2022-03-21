@@ -47,7 +47,7 @@ initLogger();
 app.get("/", (req, res) => {
   console.log("hello world");
 
-  res.send("Agora vai dar boa!");
+  res.send("Agora vai dar boa!!!!!!");
 });
 
 app.get("/log", (req, res) => {
