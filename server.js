@@ -39,8 +39,7 @@ function verifyPostData(req, res, next) {
   );
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
     res.sendStatus(403);
-  }
-  next();
+  } else next();
 }
 
 initLogger();
@@ -48,7 +47,7 @@ initLogger();
 app.get("/", (req, res) => {
   console.log("hello world");
 
-  res.send("First Page");
+  res.send("Agora vai dar boa!");
 });
 
 app.get("/log", (req, res) => {
