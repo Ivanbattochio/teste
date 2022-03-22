@@ -16,7 +16,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("deu boa!").status(200);
+  res.send("deu boa").status(200);
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
