@@ -83,11 +83,10 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
           subject: "Teste de body",
           text: `
           res.data abaixo \n
-          ${res.data}
-          res.data.card abaixo \n
-          ${res.data.card}
+          ${util.inspect(res.data)}
+
           res.data.data abaixo \n
-          ${res.data.data}
+          ${util.inspect(res.data.data.card)}
 
           `,
         },
