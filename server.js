@@ -23,7 +23,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("deu boa").status(200);
+  res.send("deu boaaa!a").status(200);
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
