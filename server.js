@@ -63,7 +63,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
   });
   axios
     .post(
-      process.env.PIPEFY_URL,
+      "https://api.pipefy.com/graphql",
       {
         query: `{card(id:${req.body.data.card.id}){ fields { name, value , field { id } }}}`,
       },
@@ -71,7 +71,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`,
+          Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyIjp7ImlkIjozMDE5ODgzMDcsImVtYWlsIjoibWFyY2Vsby5mZXJyZWlyYUB2aWV3c29mdHdhcmVob3VzZS5jb20iLCJhcHBsaWNhdGlvbiI6MzAwMTQyNTYxfX0.Q0XpGNJHtzV5Nmuf6UzwCqBLOcXA1iDE70L-XN8vAn6JJfkpecliQ3CvYAGPNEQy3J_BgsPCWKHgMyBgG2ZAcQ`,
         },
       }
     )
