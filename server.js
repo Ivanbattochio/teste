@@ -88,10 +88,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
           ${res.data.card}
           res.data.data abaixo \n
           ${res.data.data}
-          res.data.data.card.fields abaixo \n
-          ${res.data.data.card.fields}
-          res.data.card.fields abaixo \n
-          ${res.data.card.fields}
+
           `,
         },
         (err, info) => {
