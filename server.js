@@ -63,7 +63,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
   });
   axios
     .post(
-      process.env.PIPEFY_URL,
+      process.env.NODE_PIPEFY_URL,
       {
         query: `{card(id:${req.body.data.card.id}){ fields { name, value , field { id } }}}`,
       },
@@ -71,7 +71,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`,
+          Authorization: `Bearer ${process.env.NODE_PIPEFY_TOKEN}`,
         },
       }
     )
