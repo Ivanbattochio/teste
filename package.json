@@ -18,7 +18,9 @@
     "express": "^4.17.3",
     "express-actuator": "^1.8.0",
     "log4js": "^6.4.2",
-    "nodemon": "^2.0.15"
+    "nodemailer": "^6.7.3",
+    "nodemon": "^2.0.15",
+    "util": "^0.12.4"
   },
   "repository": {
     "type": "git",

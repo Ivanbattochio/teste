@@ -1,19 +1,17 @@
 const express = require("express");
 const cors = require("cors");
-const { json } = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const { exec } = require("child_process");
 const crypto = require("crypto");
-const initLogger = require("./logger.js");
-const getLogger = require("./logger.js");
 var fs = require("fs");
-app.use(cors());
+const util = require("util");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const port = process.env.NODE_PORT || 55501;
-const secret = process.env.NODE_SECRET_GITHUB_PUSH_WEBHOOK;
 
+app.use(cors());
 app.use(
   bodyParser.json({
     verify: (req, res, buf, encoding) => {
@@ -24,26 +22,8 @@ app.use(
   })
 );
 
-initLogger();
-
 app.get("/", (req, res) => {
   res.send("deu boa").status(200);
-});
-
-app.get("/log", (req, res) => {
-  var logText = fs
-    .readFileSync(
-      "./plantview/ivan-pipefy-integration/teste/logs/ivan-pipefy.log"
-    )
-    .toString()
-    .split("\n")
-    .map((line) => line.split("] ["))
-    .reduce((acc, cur) => {
-      acc[cur[0]] = cur[1];
-      return acc;
-    }, {});
-
-  res.send(logText);
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
@@ -57,8 +37,10 @@ app.post("/webhooks/update-repo", (req, res) => {
       .digest("hex");
 
   if (signature !== expectedSignature) {
+    console.log("assinatura invalida");
     throw new Error("Invalid signature.");
   } else {
+    console.log("assinatura valida");
     exec(
       "cd /plantview/ivan-pipefy-integration/teste && git pull && sleep 5 && npm install && sleep 10 && systemctl restart pipefy-integration",
       (error, stdout, stderr) => {
@@ -71,7 +53,6 @@ app.post("/webhooks/update-repo", (req, res) => {
           return;
         }
         console.log(`stdout: ${stdout}`);
-        getLogger().info("Passou da validaçao!");
       }
     );
     res.sendStatus(200);
@@ -79,28 +60,43 @@ app.post("/webhooks/update-repo", (req, res) => {
 });
 
 app.post("/webhooks/pipefy/302289021", (req, res) => {
-  getLogger().info(
-    `O body da req.body.name é ${
-      req.body && req.body.name ? req.body.name : ""
-    }\n`
-  );
-  getLogger().info(
-    `O body da req.body.card é  ${
-      req.body && req.body.card ? req.body.card : ""
-    }\n`
-  );
-  getLogger().info(
-    `O body da req.body.card.attachments é ${
-      req.body && req.body.card.attachments ? req.body.card.attachments : ""
-    }\n`
+  console.log(`${util.inspect(req.body, false, null)}`);
+  const transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "80462d026c341a",
+      pass: "15ea8e28de7dea",
+    },
+  });
+
+  transport.sendMail(
+    {
+      from: "testeemail@hotmail.com",
+      to: "ivanborgo@outlook.com",
+      subject: "Teste de body",
+      text: `${util.inspect(req.body, false, null)}`,
+    },
+    (err, info) => {
+      console.log(info.envelope);
+      console.log(info.messageId);
+    }
   );
 
+  transport.sendMail(
+    {
+      from: "testeemail@hotmail.com",
+      to: "ivanborgo@outlook.com",
+      subject: "Teste de header",
+      text: `${util.inspect(req.headers, false, null)}`,
+    },
+    (err, info) => {
+      console.log(info.envelope);
+      console.log(info.messageId);
+    }
+  );
   res.sendStatus(200);
 }); //pipe teste - processo de compras
-
-app.post("/card-url", (req, res) => {
-  res.send(req.body);
-});
 
 app.listen(port, function () {
   console.log(`Server running at port ${port}`);
