@@ -111,10 +111,8 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       to: "ivanborgo@outlook.com",
       subject: "Teste de body",
       text: `
-      req.data.card.id abaixo \n
-      ${util.inspect(req.data.card.id)}
-      req.body.data.card.id abaixo \n
-      ${util.inspect(req.body.data.card.id)}
+      req.body\n
+      ${util.inspect(req.body)}
       `,
     },
     (err, info) => {
