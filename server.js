@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("deu boa!!").status(200);
+  res.send("deu boa!!!!").status(200);
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
@@ -52,12 +52,11 @@ app.post("/webhooks/update-repo", (req, res) => {
 });
 
 app.post("/webhooks/pipefy/302289021", (req, res) => {
-  /*
   axios
     .post(
       process.env.PIPEFY_URL,
       {
-        query: `{card(id:${req.data.card.id}){ fields { name, value , field { id } }}}`,
+        query: `{card(id:${req.body.data.card.id}){ fields { name, value , field { id } }}}`,
       },
       {
         headers: {
@@ -68,16 +67,22 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       }
     )
     .then((res) => {
+      const transport = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+          user: "80462d026c341a",
+          pass: "15ea8e28de7dea",
+        },
+      });
       transport.sendMail(
         {
           from: "testeemail@hotmail.com",
           to: "ivanborgo@outlook.com",
           subject: "Teste de body",
           text: `
-          res.data abaixo \n
-          ${util.inspect(res.data)}
-          res.status abaixo \n
-          ${util.inspect(res.status)}
+          res.body.data.card.fields abaixo \n
+          ${util.inspect(res.body.data.card.fields)}
           `,
         },
         (err, info) => {
@@ -88,30 +93,8 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
     })
     .catch((err) => {
       console.log(err.message);
-    });*/
-  const transport = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: "80462d026c341a",
-      pass: "15ea8e28de7dea",
-    },
-  });
-  transport.sendMail(
-    {
-      from: "testeemail@hotmail.com",
-      to: "ivanborgo@outlook.com",
-      subject: "Teste de body",
-      text: `
-      req.body.data.card.id
-      ${util.inspect(req.body.data.card.id)}
-      `,
-    },
-    (err, info) => {
-      console.log(info.envelope);
-      console.log(info.messageId);
-    }
-  );
+    });
+
   res.sendStatus(200);
 }); //pipe teste - processo de compras
 
