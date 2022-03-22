@@ -84,7 +84,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
           text: `
           res.body.data.card.fields abaixo \n
           
-          ${util.inspect(res.data.card.fields)}
+          ${JSON.parse(res.data.card.fields)}
           `,
         },
         (err, info) => {
