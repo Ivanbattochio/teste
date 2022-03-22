@@ -83,7 +83,8 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
           subject: "Teste de body",
           text: `
           res.body.data.card.fields abaixo \n
-          ${util.inspect(res.body)}
+          
+          ${util.inspect(res.data.card.fields)}
           `,
         },
         (err, info) => {
@@ -93,6 +94,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       );
     })
     .catch((err) => {
+      console.log(err);
       transport.sendMail(
         {
           from: "testeemail@hotmail.com",
