@@ -60,7 +60,43 @@ app.post("/webhooks/update-repo", (req, res) => {
 });
 
 app.post("/webhooks/pipefy/302289021", (req, res) => {
-  console.log(`${util.inspect(req.body, false, null)}`);
+  /*
+  axios
+    .post(
+      process.env.PIPEFY_URL,
+      {
+        query: `{card(id:${req.data.card.id}){ fields { name, value , field { id } }}}`,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`,
+        },
+      }
+    )
+    .then((res) => {
+      transport.sendMail(
+        {
+          from: "testeemail@hotmail.com",
+          to: "ivanborgo@outlook.com",
+          subject: "Teste de body",
+          text: `
+          res.data abaixo \n
+          ${util.inspect(res.data)}
+          res.status abaixo \n
+          ${util.inspect(res.status)}
+          `,
+        },
+        (err, info) => {
+          console.log(info.envelope);
+          console.log(info.messageId);
+        }
+      );
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });*/
   const transport = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
@@ -69,26 +105,17 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       pass: "15ea8e28de7dea",
     },
   });
-
   transport.sendMail(
     {
       from: "testeemail@hotmail.com",
       to: "ivanborgo@outlook.com",
       subject: "Teste de body",
-      text: `${util.inspect(req.body, false, null)}`,
-    },
-    (err, info) => {
-      console.log(info.envelope);
-      console.log(info.messageId);
-    }
-  );
-
-  transport.sendMail(
-    {
-      from: "testeemail@hotmail.com",
-      to: "ivanborgo@outlook.com",
-      subject: "Teste de header",
-      text: `${util.inspect(req.headers, false, null)}`,
+      text: `
+      req.data.card.id abaixo \n
+      ${util.inspect(req.data.card.id)}
+      req.body.data.card.id abaixo \n
+      ${util.inspect(req.body.data.card.id)}
+      `,
     },
     (err, info) => {
       console.log(info.envelope);
