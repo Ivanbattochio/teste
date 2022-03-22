@@ -12,18 +12,10 @@ require("dotenv").config();
 const port = process.env.NODE_PORT || 55501;
 
 app.use(cors());
-app.use(
-  bodyParser.json({
-    verify: (req, res, buf, encoding) => {
-      if (buf && buf.length) {
-        req.rawBody = buf.toString(encoding || "utf8");
-      }
-    },
-  })
-);
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("deu boa").status(200);
+  res.send("deu boa!!").status(200);
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
@@ -111,8 +103,8 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       to: "ivanborgo@outlook.com",
       subject: "Teste de body",
       text: `
-      req.body\n
-      ${util.inspect(req.body)}
+      req.body.data.card.id
+      ${util.inspect(req.body.data.card.id)}
       `,
     },
     (err, info) => {
