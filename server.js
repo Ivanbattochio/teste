@@ -4,17 +4,15 @@ const { json } = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const { exec } = require("child_process");
-const crypto = require("crypto-js");
+const crypto = require("crypto");
 const initLogger = require("./logger.js");
 const getLogger = require("./logger.js");
 var fs = require("fs");
 app.use(cors());
+require("dotenv").config();
 
 const port = process.env.NODE_PORT || 55501;
 const secret = process.env.NODE_SECRET_GITHUB_PUSH_WEBHOOK;
-
-const sigHeaderName = "X-Hub-Signature-256";
-const sigHashAlg = "sha256";
 
 app.use(
   bodyParser.json({
@@ -28,28 +26,11 @@ app.use(
 
 initLogger();
 
-app.post("/", (req, res) => {
-  if (!req.rawBody) {
-    next("Request body empty");
-  }
-
-  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
-  crypto.createHmac;
-  const hmac = crypto.createHmac(sigHashAlg, secret);
-  const digest = Buffer.from(
-    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
-    "utf8"
-  );
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    console.log("deu errado");
-    res.sendStatus(403);
-  } else {
-    console.log("deu boa");
-  }
+app.get("/", (req, res) => {
+  res.send("deu boa").status(200);
 });
 
 app.get("/log", (req, res) => {
-  //aii q
   var logText = fs
     .readFileSync(
       "./plantview/ivan-pipefy-integration/teste/logs/ivan-pipefy.log"
@@ -66,18 +47,17 @@ app.get("/log", (req, res) => {
 });
 
 app.post("/webhooks/update-repo", (req, res) => {
-  if (!req.rawBody) {
-    next("Request body empty");
-  }
+  const signature = req.headers["x-hub-signature"];
 
-  const sig = Buffer.from(req.get(sigHeaderName) || "", "utf8");
-  const hmac = crypto.createHmac(sigHashAlg, secret);
-  const digest = Buffer.from(
-    sigHashAlg + "=" + hmac.update(req.rawBody).digest("hex"),
-    "utf8"
-  );
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    res.sendStatus(403);
+  const expectedSignature =
+    "sha1=" +
+    crypto
+      .createHmac("sha1", process.env.NODE_SECRET_GITHUB_PUSH_WEBHOOK)
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+  if (signature !== expectedSignature) {
+    throw new Error("Invalid signature.");
   } else {
     exec(
       "cd /plantview/ivan-pipefy-integration/teste && git pull && sleep 5 && npm install && sleep 10 && systemctl restart pipefy-integration",
