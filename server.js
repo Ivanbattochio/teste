@@ -82,9 +82,16 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
           to: "ivanborgo@outlook.com",
           subject: "Teste de body",
           text: `
-          res.body.data.card.fields abaixo \n
-          
-          ${JSON.parse(res.data.card.fields)}
+          res.data abaixo \n
+          ${res.data}
+          res.data.card abaixo \n
+          ${res.data.card}
+          res.data.data abaixo \n
+          ${res.data.data}
+          res.data.data.card.fields abaixo \n
+          ${res.data.data.card.fields}
+          res.data.card.fields abaixo \n
+          ${res.data.card.fields}
           `,
         },
         (err, info) => {
