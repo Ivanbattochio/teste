@@ -61,7 +61,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
       pass: "15ea8e28de7dea",
     },
   });
-
+  /*
   axios
     .post(
       process.env.NODE_PIPEFY_URL,
@@ -119,7 +119,7 @@ app.post("/webhooks/pipefy/302289021", (req, res) => {
         }
       );
     });
-
+*/
   res.sendStatus(200);
 }); //pipe teste - processo de compras
 
